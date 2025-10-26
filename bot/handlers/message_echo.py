@@ -1,4 +1,4 @@
-from bot.handler import Handler
+from bot.handlers.handler import Handler, HandlerStatus
 import bot.tg_client
 
 class MessageEcho(Handler):
@@ -10,4 +10,4 @@ class MessageEcho(Handler):
             chat_id=update["message"]["chat"]["id"], 
             text=update["message"]["text"]
         )
-        return False
+        return HandlerStatus.STOP

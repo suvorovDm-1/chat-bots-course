@@ -1,4 +1,4 @@
-from bot.handler import Handler
+from bot.handlers.handler import Handler, HandlerStatus
 
 class Dispatcher:
     def __init__(self):
@@ -12,4 +12,4 @@ class Dispatcher:
         for handler in self.handlers:
             if handler.can_handle(update):
                 need_continue = handler.handle(update)
-                if not need_continue: break
+                if need_continue == HandlerStatus.STOP: break
