@@ -1,4 +1,5 @@
 .venv/
 bot.sqlite
 .env
-bot/__pycache__
+__pycache__
+.cheat_sheet

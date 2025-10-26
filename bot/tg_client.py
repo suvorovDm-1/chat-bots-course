@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def makeRequest(method: str, **param) -> dict:
+def makeRequest(method: str, **param) -> list[dict]:
     json_data = json.dumps(param).encode('utf-8')
 
     request = urllib.request.Request(
@@ -23,11 +23,14 @@ def makeRequest(method: str, **param) -> dict:
         return response_json["result"]
 
 
-def getUpdates(offset: int) -> dict:
-    return makeRequest('getUpdates', offset=offset)
+def getUpdates(**params) -> list[dict]:
+    return makeRequest('getUpdates', **params)
     
-def sendMessage(chat_id: int, text: str) -> dict:
-    return makeRequest('sendMessage', chat_id=chat_id, text=text)
+def sendMessage(chat_id: int, text: str, **params) -> list[dict]:
+    return makeRequest('sendMessage', chat_id=chat_id, text=text, **params)
+
+def sendPhoto(chat_id: int, photo: str, **params) -> list[dict]:
+    return makeRequest('sendPhoto', chat_id=chat_id, photo=photo, **params)
     
-def getMe() -> dict:
+def getMe() -> list[dict]:
     return makeRequest('getMe')
