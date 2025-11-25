@@ -91,7 +91,7 @@ def update_user_order(telegram_id: int, order_json: dict) -> None:
                 (json.dumps(order_json, ensure_ascii=False, indent=2), telegram_id)
             )
 
-def clear_user_order(telegram_id: int) -> None:
+def clear_user_state_and_order(telegram_id: int) -> None:
     """Clear user state and order_json in the users table."""
     with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
         with connection:
