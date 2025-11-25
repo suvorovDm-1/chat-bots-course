@@ -29,8 +29,11 @@ def getUpdates(**params) -> list[dict]:
 def sendMessage(chat_id: int, text: str, **params) -> list[dict]:
     return makeRequest('sendMessage', chat_id=chat_id, text=text, **params)
 
-def sendPhoto(chat_id: int, photo: str, **params) -> list[dict]:
-    return makeRequest('sendPhoto', chat_id=chat_id, photo=photo, **params)
-    
+def answerCallbackQuery(callback_query_id: str, **kwargs) -> dict:
+    return makeRequest("answerCallbackQuery", callback_query_id=callback_query_id, **kwargs)
+
+def deleteMessage(chat_id: int, message_id: int) -> dict:
+    return makeRequest("deleteMessage", chat_id=chat_id, message_id=message_id)
+
 def getMe() -> list[dict]:
     return makeRequest('getMe')
