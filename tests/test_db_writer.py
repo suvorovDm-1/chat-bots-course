@@ -1,9 +1,5 @@
-from unittest.mock import Mock
-
 from bot.dispatcher import Dispatcher
 from bot.handlers.db_writer import DbWriter
-from bot.domain.storage import Storage
-from bot.domain.messenger import Messenger
 
 from tests.mock import Mock
 

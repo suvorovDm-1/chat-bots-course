@@ -1,4 +1,3 @@
-import json
 
 from bot.dispatcher import Dispatcher
 from bot.handlers.pizza_selection import PizzaSelection
