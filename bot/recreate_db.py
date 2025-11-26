@@ -1,3 +1,3 @@
-import bot.db_client
+from bot.domain.storage import Storage
 
-bot.db_client.recreate_database()
+storage.recreate_database()

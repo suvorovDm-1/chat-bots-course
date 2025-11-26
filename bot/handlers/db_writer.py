@@ -1,11 +1,11 @@
 from bot.handlers.handler import Handler, HandlerStatus
-from bot.db_client import persist_updates
-
+from bot.domain.messenger import Messenger
+from bot.domain.storage import Storage
 
 class DbWriter(Handler):
-    def can_handle(self, update: dict, state: str, order_json: dict) -> bool:
+    def can_handle(self, update: dict, state: str, order_json: dict, storage: Storage, messenger: Messenger) -> bool:
         return True
 
-    def handle(self, update: dict, state: str, order_json: dict) -> bool:
-        persist_updates(update)
+    def handle(self, update: dict, state: str, order_json: dict, storage: Storage, messenger: Messenger) -> bool:
+        storage.persist_updates(update)
         return HandlerStatus.CONTINUE

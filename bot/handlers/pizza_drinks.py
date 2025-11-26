@@ -1,12 +1,12 @@
 import json
 
-import bot.tg_client
-import bot.db_client
+from bot.domain.messenger import Messenger
+from bot.domain.storage import Storage
 from bot.handlers.handler import Handler, HandlerStatus
 
 
 class PizzaDrinks(Handler):
-    def can_handle(self, update: dict, state: str, data: dict) -> bool:
+    def can_handle(self, update: dict, state: str, data: dict, storage: Storage, messenger: Messenger) -> bool:
         if "callback_query" not in update:
             return False
 
@@ -16,7 +16,7 @@ class PizzaDrinks(Handler):
         callback_data = update["callback_query"]["data"]
         return callback_data.startswith("drink_")
 
-    def handle(self, update: dict, state: str, data: dict) -> HandlerStatus:
+    def handle(self, update: dict, state: str, data: dict, storage: Storage, messenger: Messenger) -> HandlerStatus:
         telegram_id = update["callback_query"]["from"]["id"]
         callback_data = update["callback_query"]["data"]
 
@@ -34,11 +34,11 @@ class PizzaDrinks(Handler):
 
         data["drink"] = selected_drink
 
-        bot.db_client.update_user_order(telegram_id, data)
-        bot.db_client.update_user_state(telegram_id, "WAIT_FOR_ORDER_APPROVE")
-        bot.tg_client.answerCallbackQuery(update["callback_query"]["id"])
+        storage.update_user_order(telegram_id, data)
+        storage.update_user_state(telegram_id, "WAIT_FOR_ORDER_APPROVE")
+        messenger.answerCallbackQuery(update["callback_query"]["id"])
 
-        bot.tg_client.deleteMessage(
+        messenger.deleteMessage(
             chat_id=update["callback_query"]["message"]["chat"]["id"],
             message_id=update["callback_query"]["message"]["message_id"],
         )
@@ -56,7 +56,7 @@ class PizzaDrinks(Handler):
 
 Is everything correct?"""
 
-        bot.tg_client.sendMessage(
+        messenger.sendMessage(
             chat_id=update["callback_query"]["message"]["chat"]["id"],
             text=order_summary,
             parse_mode="Markdown",
