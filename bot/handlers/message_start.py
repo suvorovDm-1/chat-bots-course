@@ -4,6 +4,7 @@ import bot.tg_client
 import bot.db_client
 from bot.handlers.handler import Handler, HandlerStatus
 
+
 class MessageStart(Handler):
     def can_handle(self, update: dict, state: str, data: dict) -> bool:
         return (

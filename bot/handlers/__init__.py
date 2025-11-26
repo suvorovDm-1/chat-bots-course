@@ -7,6 +7,7 @@ from bot.handlers.pizza_size import PizzaSize
 from bot.handlers.pizza_drinks import PizzaDrinks
 from bot.handlers.order_approval import OrderApproval
 
+
 def get_handlers() -> list[Handler]:
     return [
         DbWriter(),

@@ -2,6 +2,7 @@ from bot.dispatcher import Dispatcher
 import bot.tg_client
 import time
 
+
 def start_long_polling(dispatcher: Dispatcher) -> None:
     next_update_offset = 0
     while True:

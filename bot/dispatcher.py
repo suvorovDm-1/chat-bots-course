@@ -3,6 +3,7 @@ import json
 import bot.db_client
 from bot.handlers.handler import Handler, HandlerStatus
 
+
 class Dispatcher:
     def __init__(self):
         self.handlers: list[Handler] = []
