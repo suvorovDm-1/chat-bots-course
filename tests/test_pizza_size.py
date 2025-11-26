@@ -5,6 +5,7 @@ from bot.handlers.pizza_size import PizzaSize
 
 from tests.mock import Mock
 
+
 def test_pizza_size_handler():
     # апдейт c callback'ом выбора размера
     test_update = {

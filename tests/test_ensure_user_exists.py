@@ -3,6 +3,7 @@ from bot.handlers.ensure_user_exists import EnsureUserExists
 
 from tests.mock import Mock
 
+
 def test_ensure_user_exists_handler():
     test_update = {
         "update_id": 123456789,
@@ -26,6 +27,7 @@ def test_ensure_user_exists_handler():
     }
 
     ensure_user_exists_called = False
+
     def ensure_user_exists(telegram_id: int) -> None:
         assert telegram_id == 12345
         nonlocal ensure_user_exists_called

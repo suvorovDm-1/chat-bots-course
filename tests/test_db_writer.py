@@ -31,6 +31,7 @@ def test_database_writer_execution():
     }
 
     persist_update_called = False
+
     def persist_updates(update: dict) -> None:
         nonlocal persist_update_called
         persist_update_called = True
@@ -40,15 +41,17 @@ def test_database_writer_execution():
         assert telegram_id == 12345
         return None
 
-    mock_storage = Mock({
-        "persist_updates": persist_updates,
-        "get_user": get_user,
-    })
+    mock_storage = Mock(
+        {
+            "persist_updates": persist_updates,
+            "get_user": get_user,
+        }
+    )
     mock_messenger = Mock({})
 
     dispatcher = Dispatcher(mock_storage, mock_messenger)
     db_writer = DbWriter()
     dispatcher.add_handlers(db_writer)
     dispatcher.dispatch(test_update)
-    
+
     assert persist_update_called

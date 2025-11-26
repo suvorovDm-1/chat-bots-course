@@ -3,6 +3,7 @@ from bot.handlers.message_start import MessageStart
 
 from tests.mock import Mock
 
+
 def test_message_start_handler():
     test_update = {
         "update_id": 123456789,

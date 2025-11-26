@@ -46,14 +46,14 @@ def test_pizza_selection_handler():
     def update_user_order(telegram_id: int, order: dict) -> None:
         nonlocal update_user_order_called
         assert telegram_id == 12345
-        
+
         assert order == {"pizza_name": "Margherita"}
         update_user_order_called = True
 
     def update_user_state(telegram_id: int, state: str) -> None:
         nonlocal update_user_state_called
         assert telegram_id == 12345
-        
+
         assert state == "WAIT_FOR_PIZZA_SIZE"
         update_user_state_called = True
 
