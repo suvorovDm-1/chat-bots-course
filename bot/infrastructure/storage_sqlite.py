@@ -7,6 +7,7 @@ from bot.domain.storage import Storage
 
 load_dotenv()
 
+
 class StorageSqlite(Storage):
     def recreate_database(self) -> None:
         connection = sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH"))
@@ -88,7 +89,8 @@ class StorageSqlite(Storage):
         with sqlite3.connect(os.getenv("SQLITE_DATABASE_PATH")) as connection:
             with connection:
                 connection.execute(
-                    "UPDATE users SET state = ? WHERE telegram_id = ?", (state, telegram_id)
+                    "UPDATE users SET state = ? WHERE telegram_id = ?",
+                    (state, telegram_id),
                 )
 
     def update_user_order(self, telegram_id: int, order_json: dict) -> None:

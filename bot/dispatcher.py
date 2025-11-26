@@ -36,6 +36,13 @@ class Dispatcher:
         order_data = json.loads(order_json)
 
         for handler in self.handlers:
-            if handler.can_handle(update, user_state, order_data, self._storage, self._messenger):
-                if handler.handle(update, user_state, order_data, self._storage, self._messenger) == HandlerStatus.STOP:
+            if handler.can_handle(
+                update, user_state, order_data, self._storage, self._messenger
+            ):
+                if (
+                    handler.handle(
+                        update, user_state, order_data, self._storage, self._messenger
+                    )
+                    == HandlerStatus.STOP
+                ):
                     break

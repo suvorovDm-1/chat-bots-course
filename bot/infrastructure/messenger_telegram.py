@@ -7,6 +7,7 @@ from bot.domain.messenger import Messenger
 
 load_dotenv()
 
+
 class MessengerTelegram(Messenger):
     def makeRequest(self, method: str, **param) -> list[dict]:
         json_data = json.dumps(param).encode("utf-8")
