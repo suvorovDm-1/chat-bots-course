@@ -39,7 +39,6 @@ test: black ruff pytest
 docker_postgres_volume_create:
 	docker volume create $(POSTGRES_VOLUME)
 
-docker_postgres_start: docker_postgres_volume_create
 docker_network_create:
 	docker network create $(DOCKER_NETWORK) || true
 
@@ -89,3 +88,6 @@ telegram_bot_stop:
 
 telegram_bot_push:
 	docker push $(TELEGRAM_BOT_IMAGE)
+
+logs:
+	docker logs -f $(BOT_CONTAINER)
