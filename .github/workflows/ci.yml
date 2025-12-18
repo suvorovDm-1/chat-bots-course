@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, master, 'homework_*' ]
+    branches: [ main, master, 'homework_*', 12-aiogram ]
   pull_request:
-    branches: [ main, master, 'homework_*' ]
+    branches: [ main, master, 'homework_*', 12-aiogram ]
 
 jobs:
   code-quality:
