@@ -1,4 +1,5 @@
 import json
+import asyncio
 
 from bot.domain.messenger import Messenger
 from bot.domain.storage import Storage
@@ -23,7 +24,7 @@ class PizzaSize(Handler):
         callback_data = update["callback_query"]["data"]
         return callback_data.startswith("size_")
 
-    def handle(
+    async def handle(
         self,
         update: dict,
         state: str,
@@ -34,6 +35,10 @@ class PizzaSize(Handler):
         telegram_id = update["callback_query"]["from"]["id"]
         callback_data = update["callback_query"]["data"]
 
+        chat_id = update["callback_query"]["message"]["chat"]["id"]
+        message_id = update["callback_query"]["message"]["message_id"]
+        callback_query_id = update["callback_query"]["id"]
+
         size_mapping = {
             "size_small": "Small (25cm)",
             "size_medium": "Medium (30cm)",
@@ -43,18 +48,17 @@ class PizzaSize(Handler):
 
         pizza_size = size_mapping.get(callback_data)
         data["pizza_size"] = pizza_size
-        storage.update_user_order(telegram_id, data)
-        storage.update_user_state(telegram_id, "WAIT_FOR_DRINKS")
 
-        messenger.answerCallbackQuery(update["callback_query"]["id"])
+        await storage.update_user_order(telegram_id, data)
+        await storage.update_user_state(telegram_id, "WAIT_FOR_DRINKS")
 
-        messenger.deleteMessage(
-            chat_id=update["callback_query"]["message"]["chat"]["id"],
-            message_id=update["callback_query"]["message"]["message_id"],
+        await asyncio.gather(
+            messenger.answerCallbackQuery(callback_query_id),
+            messenger.deleteMessage(chat_id=chat_id, message_id=message_id),
         )
 
-        messenger.sendMessage(
-            chat_id=update["callback_query"]["message"]["chat"]["id"],
+        await messenger.sendMessage(
+            chat_id=chat_id,
             text="Please choose some drinks",
             reply_markup=json.dumps(
                 {
@@ -64,14 +68,8 @@ class PizzaSize(Handler):
                             {"text": "Pepsi", "callback_data": "drink_pepsi"},
                         ],
                         [
-                            {
-                                "text": "Orange Juice",
-                                "callback_data": "drink_orange_juice",
-                            },
-                            {
-                                "text": "Apple Juice",
-                                "callback_data": "drink_apple_juice",
-                            },
+                            {"text": "Orange Juice", "callback_data": "drink_orange_juice"},
+                            {"text": "Apple Juice", "callback_data": "drink_apple_juice"},
                         ],
                         [
                             {"text": "Water", "callback_data": "drink_water"},
@@ -84,4 +82,5 @@ class PizzaSize(Handler):
                 },
             ),
         )
+
         return HandlerStatus.STOP

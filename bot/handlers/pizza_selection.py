@@ -1,4 +1,5 @@
 import json
+import asyncio
 
 from bot.domain.messenger import Messenger
 from bot.domain.storage import Storage
@@ -23,7 +24,7 @@ class PizzaSelection(Handler):
         callback_data = update["callback_query"]["data"]
         return callback_data.startswith("pizza_")
 
-    def handle(
+    async def handle(
         self,
         update: dict,
         state: str,
@@ -34,17 +35,22 @@ class PizzaSelection(Handler):
         telegram_id = update["callback_query"]["from"]["id"]
         callback_data = update["callback_query"]["data"]
 
-        pizza_name = callback_data.replace("pizza_", "").replace("_", " ").title()
-        storage.update_user_order(telegram_id, {"pizza_name": pizza_name})
-        storage.update_user_state(telegram_id, "WAIT_FOR_PIZZA_SIZE")
-        messenger.answerCallbackQuery(update["callback_query"]["id"])
+        chat_id = update["callback_query"]["message"]["chat"]["id"]
+        message_id = update["callback_query"]["message"]["message_id"]
+        callback_query_id = update["callback_query"]["id"]
 
-        messenger.deleteMessage(
-            chat_id=update["callback_query"]["message"]["chat"]["id"],
-            message_id=update["callback_query"]["message"]["message_id"],
+        pizza_name = callback_data.replace("pizza_", "").replace("_", " ").title()
+
+        await storage.update_user_order(telegram_id, {"pizza_name": pizza_name})
+        await storage.update_user_state(telegram_id, "WAIT_FOR_PIZZA_SIZE")
+
+        await asyncio.gather(
+            messenger.answerCallbackQuery(callback_query_id),
+            messenger.deleteMessage(chat_id=chat_id, message_id=message_id),
         )
-        messenger.sendMessage(
-            chat_id=update["callback_query"]["message"]["chat"]["id"],
+
+        await messenger.sendMessage(
+            chat_id=chat_id,
             text="Please select pizza size",
             reply_markup=json.dumps(
                 {
@@ -61,4 +67,5 @@ class PizzaSelection(Handler):
                 },
             ),
         )
+
         return HandlerStatus.STOP
