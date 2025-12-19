@@ -68,7 +68,7 @@ telegram_bot_build:
 	  -f Dockerfile \
 	  .
 
-telegram_bot_start: docker_postgres_volume_create
+telegram_bot_start: docker_postgres_start
 	docker run -d \
 	  --name $(TELEGRAM_BOT_CONTAINER) \
 	  --restart unless-stopped \
@@ -82,7 +82,7 @@ telegram_bot_start: docker_postgres_volume_create
 	  --network $(DOCKER_NETWORK) \
 	  $(TELEGRAM_BOT_IMAGE)
 
-telegram_bot_stop:
+telegram_bot_stop: docker_postgres_stop
 	docker stop $(TELEGRAM_BOT_CONTAINER)
 	docker rm $(TELEGRAM_BOT_CONTAINER)
 
@@ -90,4 +90,4 @@ telegram_bot_push:
 	docker push $(TELEGRAM_BOT_IMAGE)
 
 logs:
-	docker logs -f $(BOT_CONTAINER)
+	docker logs -f $(TELEGRAM_BOT_CONTAINER)
