@@ -1,10 +1,12 @@
+import pytest
+
 from bot.dispatcher import Dispatcher
 from bot.handlers.db_writer import DbWriter
-
 from tests.mock import Mock
 
 
-def test_database_writer_execution():
+@pytest.mark.asyncio
+async def test_database_writer_execution():
     test_update = {
         "update_id": 123456789,
         "message": {
@@ -28,12 +30,12 @@ def test_database_writer_execution():
 
     persist_update_called = False
 
-    def persist_updates(update: dict) -> None:
+    async def persist_updates(update: dict) -> None:
         nonlocal persist_update_called
         persist_update_called = True
         assert update == test_update
 
-    def get_user(telegram_id: int) -> dict | None:
+    async def get_user(telegram_id: int) -> dict | None:
         assert telegram_id == 12345
         return None
 
@@ -46,8 +48,8 @@ def test_database_writer_execution():
     mock_messenger = Mock({})
 
     dispatcher = Dispatcher(mock_storage, mock_messenger)
-    db_writer = DbWriter()
-    dispatcher.add_handlers(db_writer)
-    dispatcher.dispatch(test_update)
+    dispatcher.add_handlers(DbWriter())
+
+    await dispatcher.dispatch(test_update)
 
     assert persist_update_called

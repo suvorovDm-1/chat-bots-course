@@ -14,7 +14,7 @@ class DbWriter(Handler):
     ) -> bool:
         return True
 
-    def handle(
+    async def handle(
         self,
         update: dict,
         state: str,
@@ -22,5 +22,5 @@ class DbWriter(Handler):
         storage: Storage,
         messenger: Messenger,
     ) -> bool:
-        storage.persist_updates(update)
+        await storage.persist_updates(update)
         return HandlerStatus.CONTINUE
