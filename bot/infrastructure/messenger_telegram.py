@@ -1,6 +1,5 @@
-import json
 import logging
-import urllib.request
+import aiohttp
 import os
 import time
 from dotenv import load_dotenv
@@ -18,27 +17,32 @@ logging.basicConfig(
 
 
 class MessengerTelegram(Messenger):
-    def _get_telegram_base_uri(self) -> str:
+    def __init__(self) -> None:
+        self._session: aiohttp.ClientSession | None = None
+
+    def getTelegramBaseUri(self) -> str:
         return f"https://api.telegram.org/bot{os.getenv('TELEGRAM_TOKEN')}"
 
-    def makeRequest(self, method: str, **param) -> list[dict]:
-        url = f"{self._get_telegram_base_uri()}/{method}"
+    async def getSession(self) -> aiohttp.ClientSession:
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession()
+        return self._session
+
+    async def makeRequest(self, method: str, **kwargs) -> dict:
+        url = f"{self.getTelegramBaseUri()}/{method}"
         start_time = time.time()
 
         logger.info(f"[HTTP] → POST {method}")
 
-        json_data = json.dumps(param).encode("utf-8")
-
-        request = urllib.request.Request(
-            method="POST",
-            url=url,
-            data=json_data,
-            headers={"Content-Type": "application/json"},
-        )
         try:
-            with urllib.request.urlopen(request) as response:
-                response_body = response.read().decode("utf-8")
-                response_json = json.loads(response_body)
+            session = await self._get_session()
+            async with session.post(
+                url,
+                json=kwargs,
+                headers={"Content-Type": "application/json"},
+            ) as response:
+                response_json = await response.json()
+                assert response_json["ok"] == True  # noqa: E712
 
                 duration_ms = (time.time() - start_time) * 1000
                 logger.info(f"[HTTP] ← POST {method} - {duration_ms:.2f}ms")
@@ -49,16 +53,25 @@ class MessengerTelegram(Messenger):
             logger.error(f"[HTTP] ✗ POST {method} - {duration_ms:.2f}ms - Error: {e}")
             raise
 
-    def getUpdates(self, **params) -> list[dict]:
-        return self.makeRequest("getUpdates", **params)
+    async def getUpdates(self, **params) -> list[dict]:
+        return await self.makeRequest("getUpdates", **params)
 
-    def sendMessage(self, chat_id: int, text: str, **params) -> list[dict]:
-        return self.makeRequest("sendMessage", chat_id=chat_id, text=text, **params)
+    async def close(self) -> None:
+        """Закрыть HTTP сессию."""
+        if self._session and not self._session.closed:
+            await self._session.close()
 
-    def answerCallbackQuery(self, callback_query_id: str, **kwargs) -> dict:
-        return self.makeRequest(
+    async def sendMessage(self, chat_id: int, text: str, **kwargs) -> dict:
+        return await self.makeRequest(
+            "sendMessage", chat_id=chat_id, text=text, **kwargs
+        )
+
+    async def answerCallbackQuery(self, callback_query_id: str, **kwargs) -> dict:
+        return await self.makeRequest(
             "answerCallbackQuery", callback_query_id=callback_query_id, **kwargs
         )
 
-    def deleteMessage(self, chat_id: int, message_id: int) -> dict:
-        return self.makeRequest("deleteMessage", chat_id=chat_id, message_id=message_id)
+    async def deleteMessage(self, chat_id: int, message_id: int) -> dict:
+        return await self.makeRequest(
+            "deleteMessage", chat_id=chat_id, message_id=message_id
+        )

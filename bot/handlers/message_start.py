@@ -80,16 +80,31 @@ Send /start to place another order."""
                     {
                         "inline_keyboard": [
                             [
-                                {"text": "Margherita", "callback_data": "pizza_margherita"},
-                                {"text": "Pepperoni", "callback_data": "pizza_pepperoni"},
+                                {
+                                    "text": "Margherita",
+                                    "callback_data": "pizza_margherita",
+                                },
+                                {
+                                    "text": "Pepperoni",
+                                    "callback_data": "pizza_pepperoni",
+                                },
                             ],
                             [
-                                {"text": "Quattro Stagioni", "callback_data": "pizza_quattro_stagioni"},
-                                {"text": "Capricciosa", "callback_data": "pizza_capricciosa"},
+                                {
+                                    "text": "Quattro Stagioni",
+                                    "callback_data": "pizza_quattro_stagioni",
+                                },
+                                {
+                                    "text": "Capricciosa",
+                                    "callback_data": "pizza_capricciosa",
+                                },
                             ],
                             [
                                 {"text": "Diavola", "callback_data": "pizza_diavola"},
-                                {"text": "Prosciutto", "callback_data": "pizza_prosciutto"},
+                                {
+                                    "text": "Prosciutto",
+                                    "callback_data": "pizza_prosciutto",
+                                },
                             ],
                         ],
                     }

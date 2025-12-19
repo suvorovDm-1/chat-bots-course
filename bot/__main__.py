@@ -9,6 +9,7 @@ from bot.domain.storage import Storage
 from bot.infrastructure.messenger_telegram import MessengerTelegram
 from bot.infrastructure.storage_postgres import StoragePostgres
 
+
 async def main() -> None:
     storage: Storage = StoragePostgres()
     messenger: Messenger = MessengerTelegram()
@@ -23,6 +24,7 @@ async def main() -> None:
             await messenger.close()
         if hasattr(storage, "close"):
             await storage.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

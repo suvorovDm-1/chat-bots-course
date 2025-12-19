@@ -68,8 +68,14 @@ class PizzaSize(Handler):
                             {"text": "Pepsi", "callback_data": "drink_pepsi"},
                         ],
                         [
-                            {"text": "Orange Juice", "callback_data": "drink_orange_juice"},
-                            {"text": "Apple Juice", "callback_data": "drink_apple_juice"},
+                            {
+                                "text": "Orange Juice",
+                                "callback_data": "drink_orange_juice",
+                            },
+                            {
+                                "text": "Apple Juice",
+                                "callback_data": "drink_apple_juice",
+                            },
                         ],
                         [
                             {"text": "Water", "callback_data": "drink_water"},

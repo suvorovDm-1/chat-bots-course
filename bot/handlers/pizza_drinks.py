@@ -81,7 +81,10 @@ Is everything correct?"""
                     "inline_keyboard": [
                         [
                             {"text": "✅ Ok", "callback_data": "order_approve"},
-                            {"text": "🔄 Start again", "callback_data": "order_restart"},
+                            {
+                                "text": "🔄 Start again",
+                                "callback_data": "order_restart",
+                            },
                         ],
                     ],
                 },
